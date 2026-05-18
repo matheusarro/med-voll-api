@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import med.voll.api.dto.AddressDTO;
 
 @Table(name="ADDRESSES")
 @Entity(name="Address")
@@ -30,4 +31,14 @@ public class AddressEntity {
     private String state;
 
     private String country;
+
+    public AddressEntity(AddressDTO dto) {
+        this.postalCode = dto.postalCode();
+        this.street = dto.street();
+        this.number = dto.number();
+        this.complement = dto.complement();
+        this.city = dto.city();
+        this.state = dto.state();
+        this.country = dto.country();
+    }
 }

@@ -28,12 +28,15 @@ public class DoctorEntity {
     @Enumerated(EnumType.STRING)
     private SpecialityDTO speciality;
 
-    private Long addressId;
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    private AddressEntity address;
 
-    public DoctorEntity(DoctorDTO doctor) {
+    public DoctorEntity(DoctorDTO doctor, AddressEntity address) {
         this.name = doctor.name();
         this.crm = doctor.crm();
         this.email = doctor.email();
         this.speciality = doctor.speciality();
+        this.address = address;
     }
 }
