@@ -1,0 +1,5 @@
+spring.application.name=api
+spring.datasource.url=URL_DB
+spring.datasource.username=USER_DB
+spring.datasource.password=PASS_DB
+
