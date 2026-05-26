@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import med.voll.api.dto.DoctorDTO;
 import med.voll.api.dto.SpecialityDTO;
 
-@Table(name="DOCTORS")
+@Table(name="doctors")
 @Entity(name="Doctor")
 @Getter
 @NoArgsConstructor

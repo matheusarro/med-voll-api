@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import med.voll.api.dto.AddressDTO;
 
-@Table(name="ADDRESSES")
+@Table(name="addresses")
 @Entity(name="Address")
 @Getter
 @NoArgsConstructor
