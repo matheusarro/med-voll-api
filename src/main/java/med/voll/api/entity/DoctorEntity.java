@@ -25,6 +25,8 @@ public class DoctorEntity {
 
     private String email;
 
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     private SpecialityDTO speciality;
 
@@ -36,6 +38,7 @@ public class DoctorEntity {
         this.name = doctor.name();
         this.crm = doctor.crm();
         this.email = doctor.email();
+        this.phone = doctor.phone();
         this.speciality = doctor.speciality();
         this.address = address;
     }

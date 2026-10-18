@@ -18,6 +18,10 @@ public record DoctorDTO (
         @Email
         String email,
 
+        @NotBlank
+        @Pattern(regexp = "\\d{10,11}", message = "Phone number must contain only numbers and have between 10 and 11 digits")
+        String phone,
+
         @NotNull
         SpecialityDTO speciality,
 
