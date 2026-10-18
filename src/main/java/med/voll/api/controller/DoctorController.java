@@ -1,5 +1,6 @@
 package med.voll.api.controller;
 
+import jakarta.validation.Valid;
 import med.voll.api.dto.DoctorDTO;
 import med.voll.api.entity.AddressEntity;
 import med.voll.api.entity.DoctorEntity;
@@ -23,7 +24,7 @@ public class DoctorController {
 
     @PostMapping
     @Transactional
-    public void createDoctor(@RequestBody DoctorDTO doctor) {
+    public void createDoctor(@RequestBody @Valid DoctorDTO doctor) {
         AddressEntity address = addressRepository.save(new AddressEntity(doctor.address()));
         repository.save(new DoctorEntity(doctor, address));
     }
