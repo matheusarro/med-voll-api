@@ -2,6 +2,7 @@ package med.voll.api.controller;
 
 import jakarta.validation.Valid;
 import med.voll.api.dto.DoctorDTO;
+import med.voll.api.dto.DoctorUpdateDTO;
 import med.voll.api.dto.DoctorsListDTO;
 import med.voll.api.entity.AddressEntity;
 import med.voll.api.entity.DoctorEntity;
@@ -13,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/doctors")
@@ -40,5 +39,19 @@ public class DoctorController {
         return repository
                 .findAll(pagination)
                 .map(DoctorsListDTO::new);
+    }
+
+    @PutMapping
+    @Transactional
+    public void update(@RequestBody @Valid DoctorUpdateDTO doctor) {
+        var doctorAddress = doctor.address();
+
+        if (doctor.address() != null) {
+            var addressEntity = addressRepository.getReferenceById(doctorAddress.id());
+            addressEntity.update(doctorAddress);
+        }
+
+        var doctorEntity = repository.getReferenceById(doctor.id());
+        doctorEntity.doctorUpdate(doctor);
     }
 }
