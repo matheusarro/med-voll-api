@@ -16,6 +16,9 @@ public record AddressDTO(
         String complement,
 
         @NotBlank
+        String neighborhood,
+
+        @NotBlank
         String city,
 
         @NotBlank

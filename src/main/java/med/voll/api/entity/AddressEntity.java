@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import med.voll.api.dto.AddressDTO;
+import med.voll.api.dto.AddressUpdateDTO;
 
 @Table(name="addresses")
 @Entity(name="Address")
@@ -26,6 +27,8 @@ public class AddressEntity {
 
     private String complement;
 
+    private String neighborhood;
+
     private String city;
 
     private String state;
@@ -37,8 +40,20 @@ public class AddressEntity {
         this.street = dto.street();
         this.number = dto.number();
         this.complement = dto.complement();
+        this.neighborhood = dto.neighborhood();
         this.city = dto.city();
         this.state = dto.state();
         this.country = dto.country();
+    }
+
+    public void update(AddressUpdateDTO data) {
+        this.postalCode = data.postalCode();
+        this.street = data.street();
+        this.number = data.number();
+        this.complement = data.complement();
+        this.neighborhood = data.neighborhood();
+        this.city = data.city();
+        this.state = data.state();
+        this.country = data.country();
     }
 }
