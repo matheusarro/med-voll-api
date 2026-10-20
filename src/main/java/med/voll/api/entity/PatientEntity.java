@@ -37,4 +37,14 @@ public class PatientEntity {
         this.address = address;
         this.active = true;
     }
+
+    public void update(PatientUpdateDTO data) {
+        if (data.name() != null) {
+            this.name = data.name();
+        }
+
+        if (data.phone() != null) {
+            this.phone = data.phone();
+        }
+    }
 }

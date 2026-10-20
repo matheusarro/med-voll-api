@@ -1,9 +1,7 @@
 package med.voll.api.controller;
 
 import jakarta.validation.Valid;
-import med.voll.api.dto.DoctorsListDTO;
-import med.voll.api.dto.PatientDTO;
-import med.voll.api.dto.PatientsListDTO;
+import med.voll.api.dto.*;
 import med.voll.api.entity.AddressEntity;
 import med.voll.api.entity.PatientEntity;
 import med.voll.api.repository.AddressRepository;
@@ -39,5 +37,19 @@ public class PatientController {
         return repository
                 .findAll(pagination)
                 .map(PatientsListDTO::new);
+    }
+
+    @PutMapping
+    @Transactional
+    public void updatePatient(@RequestBody @Valid PatientUpdateDTO patient) {
+        var patientAddress = patient.address();
+
+        if (patient.address() != null) {
+            var addressEntity = addressRepository.getReferenceById(patientAddress.id());
+            addressEntity.update(patientAddress);
+        }
+
+        var patientEntity = repository.getReferenceById(patient.id());
+        patientEntity.update(patient);
     }
 }
