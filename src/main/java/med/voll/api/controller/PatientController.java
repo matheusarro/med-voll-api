@@ -52,4 +52,11 @@ public class PatientController {
         var patientEntity = repository.getReferenceById(patient.id());
         patientEntity.update(patient);
     }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void deletePatient(@PathVariable Long id) {
+        var patientEntity = repository.getReferenceById(id);
+        patientEntity.delete();
+    }
 }

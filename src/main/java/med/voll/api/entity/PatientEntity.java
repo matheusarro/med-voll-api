@@ -47,4 +47,8 @@ public class PatientEntity {
             this.phone = data.phone();
         }
     }
+
+    public void delete() {
+        this.active = false;
+    }
 }
