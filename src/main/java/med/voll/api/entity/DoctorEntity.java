@@ -35,6 +35,8 @@ public class DoctorEntity {
     @JoinColumn(name = "address_id")
     private AddressEntity address;
 
+    private boolean active;
+
     public DoctorEntity(DoctorDTO doctor, AddressEntity address) {
         this.name = doctor.name();
         this.crm = doctor.crm();
@@ -42,9 +44,10 @@ public class DoctorEntity {
         this.phone = doctor.phone();
         this.speciality = doctor.speciality();
         this.address = address;
+        this.active = true;
     }
 
-    public void doctorUpdate(DoctorUpdateDTO data) {
+    public void update(DoctorUpdateDTO data) {
         if (data.name() != null) {
             this.name = data.name();
         }
@@ -52,5 +55,9 @@ public class DoctorEntity {
         if (data.phone() != null) {
             this.phone = data.phone();
         }
+    }
+
+    public void delete() {
+        this.active = false;
     }
 }

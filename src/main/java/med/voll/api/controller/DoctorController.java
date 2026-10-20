@@ -37,13 +37,13 @@ public class DoctorController {
             Pageable pagination
     ) {
         return repository
-                .findAll(pagination)
+                .findAllByActiveTrue(pagination)
                 .map(DoctorsListDTO::new);
     }
 
     @PutMapping
     @Transactional
-    public void update(@RequestBody @Valid DoctorUpdateDTO doctor) {
+    public void updateDoctor(@RequestBody @Valid DoctorUpdateDTO doctor) {
         var doctorAddress = doctor.address();
 
         if (doctor.address() != null) {
@@ -52,6 +52,13 @@ public class DoctorController {
         }
 
         var doctorEntity = repository.getReferenceById(doctor.id());
-        doctorEntity.doctorUpdate(doctor);
+        doctorEntity.update(doctor);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public void deleteDoctor(@PathVariable Long id) {
+        var doctorEntity = repository.getReferenceById(id);
+        doctorEntity.delete();
     }
 }
