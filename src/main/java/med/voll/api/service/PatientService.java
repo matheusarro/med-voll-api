@@ -31,9 +31,7 @@ public class PatientService {
     }
 
     public Page<PatientsListDTO> getList(Pageable pagination) {
-        return patientRepository
-                .findAll(pagination)
-                .map(PatientsListDTO::new);
+        return patientRepository.findAll(pagination).map(PatientsListDTO::new);
     }
 
     public PatientDetailDTO get(Long id) {
@@ -43,16 +41,17 @@ public class PatientService {
     }
 
     @Transactional
-    public void update(Long id, PatientUpdateDTO patient) {
-        var patientAddress = patient.address();
+    public PatientDetailDTO update(Long id, PatientUpdateDTO patient) {
         var patientEntity = patientRepository.getReferenceById(id);
 
         if (patient.address() != null) {
             var addressEntity = addressRepository.getReferenceById(patientEntity.getAddress().getId());
-            addressEntity.update(patientAddress);
+            addressEntity.update(patient.address());
         }
 
         patientEntity.update(patient);
+
+        return new PatientDetailDTO(patientEntity);
     }
 
     @Transactional

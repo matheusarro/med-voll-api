@@ -10,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/patients")
@@ -24,15 +25,14 @@ public class PatientController {
 
     @PostMapping
     public ResponseEntity<PatientDetailDTO> create(@RequestBody @Valid PatientCreateDTO patient, UriComponentsBuilder uriBuilder) {
-        var patientDTO = patientService.create(patient);
-        var uri = uriBuilder.path("/patients/{id}").buildAndExpand(patientDTO.id()).toUri();
+        PatientDetailDTO patientDTO = patientService.create(patient);
+        URI uri = uriBuilder.path("/patients/{id}").buildAndExpand(patientDTO.id()).toUri();
         return ResponseEntity.created(uri).body(patientDTO);
     }
 
     @GetMapping
     public Page<PatientsListDTO> getList(
-            @PageableDefault(size = 10, sort = {"name"})
-            Pageable pagination
+            @PageableDefault(size = 10, sort = {"name"}) Pageable pagination
     ) {
         return patientService.getList(pagination);
     }
@@ -49,9 +49,9 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody @Valid PatientUpdateDTO patient) {
-        patientService.update(id, patient);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PatientDetailDTO> update(@PathVariable Long id, @RequestBody @Valid PatientUpdateDTO patient) {
+        PatientDetailDTO patientData = patientService.update(id, patient);
+        return ResponseEntity.ok(patientData);
     }
 
     @DeleteMapping("/{id}")

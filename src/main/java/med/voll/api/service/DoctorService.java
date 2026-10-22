@@ -38,7 +38,7 @@ public class DoctorService {
     }
 
     @Transactional
-    public void update(Long id, DoctorUpdateDTO doctor) {
+    public DoctorDetailDTO update(Long id, DoctorUpdateDTO doctor) {
         var doctorEntity = doctorRepository.getReferenceById(id);
 
         if (doctor.address() != null) {
@@ -47,6 +47,8 @@ public class DoctorService {
         }
 
         doctorEntity.update(doctor);
+
+        return new DoctorDetailDTO(doctorEntity);
     }
 
     @Transactional
