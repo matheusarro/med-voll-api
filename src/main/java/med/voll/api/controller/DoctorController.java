@@ -1,9 +1,7 @@
 package med.voll.api.controller;
 
 import jakarta.validation.Valid;
-import med.voll.api.dto.DoctorDTO;
-import med.voll.api.dto.DoctorUpdateDTO;
-import med.voll.api.dto.DoctorsListDTO;
+import med.voll.api.dto.*;
 import med.voll.api.entity.AddressEntity;
 import med.voll.api.entity.DoctorEntity;
 import med.voll.api.repository.AddressRepository;
@@ -12,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,31 +18,39 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/doctors")
 public class DoctorController {
     @Autowired
-    private DoctorRepository repository;
+    private DoctorRepository doctorRepository;
 
     @Autowired
     private AddressRepository addressRepository;
 
     @PostMapping
     @Transactional
-    public void createDoctor(@RequestBody @Valid DoctorDTO doctor) {
+    public void create(@RequestBody @Valid DoctorDTO doctor) {
         AddressEntity address = addressRepository.save(new AddressEntity(doctor.address()));
-        repository.save(new DoctorEntity(doctor, address));
+        doctorRepository.save(new DoctorEntity(doctor, address));
     }
 
     @GetMapping
-    public Page<DoctorsListDTO> getDoctors(
+    public Page<DoctorsListDTO> getList(
             @PageableDefault(size = 10, sort = {"name"})
             Pageable pagination
     ) {
-        return repository
-                .findAllByActiveTrue(pagination)
+        return doctorRepository
+                .findAll(pagination)
                 .map(DoctorsListDTO::new);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DoctorDetailDTO> get(@PathVariable Long id) {
+        return doctorRepository.findById(id)
+                .map(DoctorDetailDTO::new)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping
     @Transactional
-    public void updateDoctor(@RequestBody @Valid DoctorUpdateDTO doctor) {
+    public void update(@RequestBody @Valid DoctorUpdateDTO doctor) {
         var doctorAddress = doctor.address();
 
         if (doctor.address() != null) {
@@ -51,14 +58,14 @@ public class DoctorController {
             addressEntity.update(doctorAddress);
         }
 
-        var doctorEntity = repository.getReferenceById(doctor.id());
+        var doctorEntity = doctorRepository.getReferenceById(doctor.id());
         doctorEntity.update(doctor);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void deleteDoctor(@PathVariable Long id) {
-        var doctorEntity = repository.getReferenceById(id);
+    public void delete(@PathVariable Long id) {
+        var doctorEntity = doctorRepository.getReferenceById(id);
         doctorEntity.delete();
     }
 }
