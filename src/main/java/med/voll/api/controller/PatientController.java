@@ -24,10 +24,10 @@ public class PatientController {
     private PatientService patientService;
 
     @PostMapping
-    public ResponseEntity<PatientDetailDTO> create(@RequestBody @Valid PatientCreateDTO patient, UriComponentsBuilder uriBuilder) {
-        PatientDetailDTO patientDTO = patientService.create(patient);
-        URI uri = uriBuilder.path("/patients/{id}").buildAndExpand(patientDTO.id()).toUri();
-        return ResponseEntity.created(uri).body(patientDTO);
+    public ResponseEntity<PatientDetailDTO> create(@RequestBody @Valid PatientCreateDTO patientData, UriComponentsBuilder uriBuilder) {
+        PatientDetailDTO patient = patientService.create(patientData);
+        URI uri = uriBuilder.path("/patients/{id}").buildAndExpand(patient.id()).toUri();
+        return ResponseEntity.created(uri).body(patient);
     }
 
     @GetMapping
@@ -49,9 +49,9 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PatientDetailDTO> update(@PathVariable Long id, @RequestBody @Valid PatientUpdateDTO patient) {
-        PatientDetailDTO patientData = patientService.update(id, patient);
-        return ResponseEntity.ok(patientData);
+    public ResponseEntity<PatientDetailDTO> update(@PathVariable Long id, @RequestBody @Valid PatientUpdateDTO patientData) {
+        PatientDetailDTO patient = patientService.update(id, patientData);
+        return ResponseEntity.ok(patient);
     }
 
     @DeleteMapping("/{id}")
