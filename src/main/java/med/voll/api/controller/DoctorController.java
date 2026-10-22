@@ -2,70 +2,55 @@ package med.voll.api.controller;
 
 import jakarta.validation.Valid;
 import med.voll.api.dto.*;
-import med.voll.api.entity.AddressEntity;
-import med.voll.api.entity.DoctorEntity;
-import med.voll.api.repository.AddressRepository;
-import med.voll.api.repository.DoctorRepository;
+import med.voll.api.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/doctors")
 public class DoctorController {
-    @Autowired
-    private DoctorRepository doctorRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
+    private DoctorService doctorService;
 
     @PostMapping
-    @Transactional
-    public void create(@RequestBody @Valid DoctorCreateDTO doctor) {
-        AddressEntity address = addressRepository.save(new AddressEntity(doctor.address()));
-        doctorRepository.save(new DoctorEntity(doctor, address));
+    public ResponseEntity<Void> create(@RequestBody @Valid DoctorCreateDTO doctor) {
+        doctorService.create(doctor);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
     public Page<DoctorsListDTO> getList(
-            @PageableDefault(size = 10, sort = {"name"})
-            Pageable pagination
+            @PageableDefault(size = 10, sort = {"name"}) Pageable pagination
     ) {
-        return doctorRepository
-                .findAll(pagination)
-                .map(DoctorsListDTO::new);
+        return doctorService.getList(pagination);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DoctorDetailDTO> get(@PathVariable Long id) {
-        return doctorRepository.findById(id)
-                .map(DoctorDetailDTO::new)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        DoctorDetailDTO doctor = doctorService.get(id);
+
+        if (doctor == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(doctor);
     }
 
     @PutMapping("/{id}")
-    @Transactional
-    public void update(@PathVariable Long id, @RequestBody @Valid DoctorUpdateDTO doctor) {
-        var doctorAddress = doctor.address();
-        var doctorEntity = doctorRepository.getReferenceById(id);
-
-        if (doctor.address() != null) {
-            var addressEntity = addressRepository.getReferenceById(doctorEntity.getAddress().getId());
-            addressEntity.update(doctorAddress);
-        }
-
-        doctorEntity.update(doctor);
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody @Valid DoctorUpdateDTO doctor) {
+        doctorService.update(id, doctor);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
-    public void delete(@PathVariable Long id) {
-        var doctorEntity = doctorRepository.getReferenceById(id);
-        doctorEntity.delete();
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        doctorService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
