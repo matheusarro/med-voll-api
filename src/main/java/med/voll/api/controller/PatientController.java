@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,31 +18,39 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/patients")
 public class PatientController {
     @Autowired
-    private PatientRepository repository;
+    private PatientRepository patientRepository;
 
     @Autowired
     private AddressRepository addressRepository;
 
     @PostMapping
     @Transactional
-    public void createPatient(@RequestBody @Valid PatientDTO patient) {
+    public void create(@RequestBody @Valid PatientDTO patient) {
         AddressEntity address = addressRepository.save(new AddressEntity(patient.address()));
-        repository.save(new PatientEntity(patient, address));
+        patientRepository.save(new PatientEntity(patient, address));
     }
 
     @GetMapping
-    public Page<PatientsListDTO> getPatients(
+    public Page<PatientsListDTO> getList(
             @PageableDefault(size = 10, sort = {"name"})
             Pageable pagination
     ) {
-        return repository
+        return patientRepository
                 .findAll(pagination)
                 .map(PatientsListDTO::new);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<PatientDetailDTO> get(@PathVariable Long id) {
+        return patientRepository.findById(id)
+                .map(PatientDetailDTO::new)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PutMapping
     @Transactional
-    public void updatePatient(@RequestBody @Valid PatientUpdateDTO patient) {
+    public void update(@RequestBody @Valid PatientUpdateDTO patient) {
         var patientAddress = patient.address();
 
         if (patient.address() != null) {
@@ -49,14 +58,14 @@ public class PatientController {
             addressEntity.update(patientAddress);
         }
 
-        var patientEntity = repository.getReferenceById(patient.id());
+        var patientEntity = patientRepository.getReferenceById(patient.id());
         patientEntity.update(patient);
     }
 
     @DeleteMapping("/{id}")
     @Transactional
-    public void deletePatient(@PathVariable Long id) {
-        var patientEntity = repository.getReferenceById(id);
+    public void delete(@PathVariable Long id) {
+        var patientEntity = patientRepository.getReferenceById(id);
         patientEntity.delete();
     }
 }
