@@ -21,9 +21,10 @@ public class DoctorService {
     private AddressRepository addressRepository;
 
     @Transactional
-    public void create(DoctorCreateDTO doctor) {
+    public DoctorDetailDTO create(DoctorCreateDTO doctor) {
         AddressEntity address = addressRepository.save(new AddressEntity(doctor.address()));
-        doctorRepository.save(new DoctorEntity(doctor, address));
+        var doctorEntity = doctorRepository.save(new DoctorEntity(doctor, address));
+        return new DoctorDetailDTO(doctorEntity);
     }
 
     public Page<DoctorsListDTO> getList(Pageable pagination) {

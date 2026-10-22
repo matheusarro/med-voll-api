@@ -10,6 +10,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/doctors")
@@ -19,9 +20,10 @@ public class DoctorController {
     private DoctorService doctorService;
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid DoctorCreateDTO doctor) {
-        doctorService.create(doctor);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<DoctorDetailDTO> create(@RequestBody @Valid DoctorCreateDTO doctor, UriComponentsBuilder uriBuilder) {
+        var doctorDTO = doctorService.create(doctor);
+        var uri = uriBuilder.path("/doctors/{id}").buildAndExpand(doctorDTO.id()).toUri();
+        return ResponseEntity.created(uri).body(doctorDTO);
     }
 
     @GetMapping
