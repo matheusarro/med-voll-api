@@ -48,17 +48,17 @@ public class DoctorController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     @Transactional
-    public void update(@RequestBody @Valid DoctorUpdateDTO doctor) {
+    public void update(@PathVariable Long id, @RequestBody @Valid DoctorUpdateDTO doctor) {
         var doctorAddress = doctor.address();
+        var doctorEntity = doctorRepository.getReferenceById(id);
 
         if (doctor.address() != null) {
-            var addressEntity = addressRepository.getReferenceById(doctorAddress.id());
+            var addressEntity = addressRepository.getReferenceById(doctorEntity.getAddress().getId());
             addressEntity.update(doctorAddress);
         }
 
-        var doctorEntity = doctorRepository.getReferenceById(doctor.id());
         doctorEntity.update(doctor);
     }
 
