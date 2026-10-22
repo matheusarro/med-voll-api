@@ -1,33 +1,30 @@
 package med.voll.api.controller;
 
 import jakarta.validation.Valid;
-import med.voll.api.dto.*;
-import med.voll.api.entity.AddressEntity;
-import med.voll.api.entity.PatientEntity;
-import med.voll.api.repository.AddressRepository;
-import med.voll.api.repository.PatientRepository;
+import med.voll.api.dto.PatientCreateDTO;
+import med.voll.api.dto.PatientDetailDTO;
+import med.voll.api.dto.PatientUpdateDTO;
+import med.voll.api.dto.PatientsListDTO;
+import med.voll.api.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/patients")
 public class PatientController {
-    @Autowired
-    private PatientRepository patientRepository;
 
     @Autowired
-    private AddressRepository addressRepository;
+    private PatientService patientService;
 
     @PostMapping
-    @Transactional
-    public void create(@RequestBody @Valid PatientCreateDTO patient) {
-        AddressEntity address = addressRepository.save(new AddressEntity(patient.address()));
-        patientRepository.save(new PatientEntity(patient, address));
+    public ResponseEntity<Void> create(@RequestBody @Valid PatientCreateDTO patient) {
+        patientService.create(patient);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
@@ -35,37 +32,29 @@ public class PatientController {
             @PageableDefault(size = 10, sort = {"name"})
             Pageable pagination
     ) {
-        return patientRepository
-                .findAll(pagination)
-                .map(PatientsListDTO::new);
+        return patientService.getList(pagination);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PatientDetailDTO> get(@PathVariable Long id) {
-        return patientRepository.findById(id)
-                .map(PatientDetailDTO::new)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        PatientDetailDTO patient = patientService.get(id);
+
+        if (patient == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(patient);
     }
 
     @PutMapping("/{id}")
-    @Transactional
-    public void update(@PathVariable Long id, @RequestBody @Valid PatientUpdateDTO patient) {
-        var patientAddress = patient.address();
-        var patientEntity = patientRepository.getReferenceById(id);
-
-        if (patient.address() != null) {
-            var addressEntity = addressRepository.getReferenceById(patientEntity.getAddress().getId());
-            addressEntity.update(patientAddress);
-        }
-
-        patientEntity.update(patient);
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody @Valid PatientUpdateDTO patient) {
+        patientService.update(id, patient);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    @Transactional
-    public void delete(@PathVariable Long id) {
-        var patientEntity = patientRepository.getReferenceById(id);
-        patientEntity.delete();
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        patientService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
