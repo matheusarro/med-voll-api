@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import med.voll.api.dto.DoctorDTO;
+import med.voll.api.dto.DoctorCreateDTO;
 import med.voll.api.dto.DoctorUpdateDTO;
 import med.voll.api.dto.SpecialityDTO;
 
@@ -37,7 +37,7 @@ public class DoctorEntity {
 
     private boolean active;
 
-    public DoctorEntity(DoctorDTO doctor, AddressEntity address) {
+    public DoctorEntity(DoctorCreateDTO doctor, AddressEntity address) {
         this.name = doctor.name();
         this.crm = doctor.crm();
         this.email = doctor.email();

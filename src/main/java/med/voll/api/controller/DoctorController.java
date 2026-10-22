@@ -25,7 +25,7 @@ public class DoctorController {
 
     @PostMapping
     @Transactional
-    public void create(@RequestBody @Valid DoctorDTO doctor) {
+    public void create(@RequestBody @Valid DoctorCreateDTO doctor) {
         AddressEntity address = addressRepository.save(new AddressEntity(doctor.address()));
         doctorRepository.save(new DoctorEntity(doctor, address));
     }

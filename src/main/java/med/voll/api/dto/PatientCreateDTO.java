@@ -6,13 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-public record DoctorDTO (
+public record PatientCreateDTO(
         @NotBlank
         String name,
 
         @NotBlank
-        @Pattern(regexp = "\\d{4,6}", message = "CRM must contain only numbers and have between 4 and 6 digits")
-        String crm,
+        @Pattern(regexp = "\\d{11}", message = "CPF must contain only numbers and have between 11 digits")
+        String cpf,
 
         @NotBlank
         @Email
@@ -23,9 +23,6 @@ public record DoctorDTO (
         String phone,
 
         @NotNull
-        SpecialityDTO speciality,
-
-        @NotNull
         @Valid
-        AddressDTO address
+        AddressCreateDTO address
 ) {}

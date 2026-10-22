@@ -3,7 +3,7 @@ package med.voll.api.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-public record AddressDTO(
+public record AddressCreateDTO(
         @NotBlank
         @Pattern(regexp = "\\d{8}", message = "Postal code must be in the format 12345678")
         String postalCode,

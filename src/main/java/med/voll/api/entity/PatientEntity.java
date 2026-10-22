@@ -29,7 +29,7 @@ public class PatientEntity {
 
     private boolean active;
 
-    public PatientEntity(PatientDTO patient, AddressEntity address) {
+    public PatientEntity(PatientCreateDTO patient, AddressEntity address) {
         this.name = patient.name();
         this.cpf = patient.cpf();
         this.email = patient.email();
