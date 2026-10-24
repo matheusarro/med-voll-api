@@ -41,10 +41,6 @@ public class DoctorController {
     public ResponseEntity<DoctorDetailDTO> get(@PathVariable Long id) {
         DoctorDetailDTO doctor = doctorService.get(id);
 
-        if (doctor == null) {
-            return ResponseEntity.notFound().build();
-        }
-
         return ResponseEntity.ok(doctor);
     }
 

@@ -1,5 +1,6 @@
 package med.voll.api.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import med.voll.api.dto.PatientCreateDTO;
 import med.voll.api.dto.PatientDetailDTO;
 import med.voll.api.dto.PatientUpdateDTO;
@@ -37,7 +38,7 @@ public class PatientService {
     public PatientDetailDTO get(Long id) {
         return patientRepository.findById(id)
                 .map(PatientDetailDTO::new)
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("Paciente não encontrado."));
     }
 
     @Transactional

@@ -1,6 +1,10 @@
 package med.voll.api.service;
 
-import med.voll.api.dto.*;
+import jakarta.persistence.EntityNotFoundException;
+import med.voll.api.dto.DoctorCreateDTO;
+import med.voll.api.dto.DoctorDetailDTO;
+import med.voll.api.dto.DoctorUpdateDTO;
+import med.voll.api.dto.DoctorsListDTO;
 import med.voll.api.entity.AddressEntity;
 import med.voll.api.entity.DoctorEntity;
 import med.voll.api.repository.AddressRepository;
@@ -34,7 +38,7 @@ public class DoctorService {
     public DoctorDetailDTO get(Long id) {
         return doctorRepository.findById(id)
                 .map(DoctorDetailDTO::new)
-                .orElse(null);
+                .orElseThrow(() -> new EntityNotFoundException("Médico não encontrado."));
     }
 
     @Transactional
