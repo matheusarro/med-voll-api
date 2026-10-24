@@ -23,7 +23,7 @@ public class DoctorService {
     @Transactional
     public DoctorDetailDTO create(DoctorCreateDTO doctor) {
         AddressEntity address = addressRepository.save(new AddressEntity(doctor.address()));
-        var doctorEntity = doctorRepository.save(new DoctorEntity(doctor, address));
+        DoctorEntity doctorEntity = doctorRepository.save(new DoctorEntity(doctor, address));
         return new DoctorDetailDTO(doctorEntity);
     }
 
@@ -39,10 +39,10 @@ public class DoctorService {
 
     @Transactional
     public DoctorDetailDTO update(Long id, DoctorUpdateDTO doctor) {
-        var doctorEntity = doctorRepository.getReferenceById(id);
+        DoctorEntity doctorEntity = doctorRepository.getReferenceById(id);
 
         if (doctor.address() != null) {
-            var addressEntity = addressRepository.getReferenceById(doctorEntity.getAddress().getId());
+            AddressEntity addressEntity = addressRepository.getReferenceById(doctorEntity.getAddress().getId());
             addressEntity.update(doctor.address());
         }
 
@@ -53,7 +53,7 @@ public class DoctorService {
 
     @Transactional
     public void delete(Long id) {
-        var doctorEntity = doctorRepository.getReferenceById(id);
+        DoctorEntity doctorEntity = doctorRepository.getReferenceById(id);
         doctorEntity.delete();
     }
 }

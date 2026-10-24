@@ -26,7 +26,7 @@ public class PatientService {
     @Transactional
     public PatientDetailDTO create(PatientCreateDTO patient) {
         AddressEntity address = addressRepository.save(new AddressEntity(patient.address()));
-        var patientEntity = patientRepository.save(new PatientEntity(patient, address));
+        PatientEntity patientEntity = patientRepository.save(new PatientEntity(patient, address));
         return new PatientDetailDTO(patientEntity);
     }
 
@@ -42,10 +42,10 @@ public class PatientService {
 
     @Transactional
     public PatientDetailDTO update(Long id, PatientUpdateDTO patient) {
-        var patientEntity = patientRepository.getReferenceById(id);
+        PatientEntity patientEntity = patientRepository.getReferenceById(id);
 
         if (patient.address() != null) {
-            var addressEntity = addressRepository.getReferenceById(patientEntity.getAddress().getId());
+            AddressEntity addressEntity = addressRepository.getReferenceById(patientEntity.getAddress().getId());
             addressEntity.update(patient.address());
         }
 
@@ -56,7 +56,7 @@ public class PatientService {
 
     @Transactional
     public void delete(Long id) {
-        var patientEntity = patientRepository.getReferenceById(id);
+        PatientEntity patientEntity = patientRepository.getReferenceById(id);
         patientEntity.delete();
     }
 }
