@@ -2,8 +2,9 @@ spring.application.name=api
 spring.datasource.url=URL_DB
 spring.datasource.username=USER_DB
 spring.datasource.password=PASS_DB
-
 # spring.jpa.show-sql=true
 # spring.jpa.properties.hibernate.format_sql=true
 
 server.error.include-stacktrace=never
+
+api.security.token.secret=${JWT_SECRET:example-secret}
