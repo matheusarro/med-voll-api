@@ -25,6 +25,11 @@ public class UserEntity implements UserDetails {
     private String username;
     private String password;
 
+    public UserEntity(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
