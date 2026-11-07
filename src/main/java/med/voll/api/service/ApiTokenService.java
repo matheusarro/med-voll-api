@@ -32,6 +32,19 @@ public class ApiTokenService {
         }
     }
 
+    public String getSubject(String token) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            return JWT.require(algorithm)
+                    .withIssuer("Voll.med API")
+                    .build()
+                    .verify(token) // validate the token
+                    .getSubject();
+        } catch (JWTCreationException exception){
+            throw new RuntimeException("Token JWT inválido ou expirado");
+        }
+    }
+
     private Instant tokenExpirationDate() {
         return LocalDateTime.now().plusDays(2).toInstant(ZoneOffset.of("-03:00"));
     }
